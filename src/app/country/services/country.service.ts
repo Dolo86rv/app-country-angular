@@ -22,7 +22,7 @@ export class CountryService {
       .get<RESTCountry[]>(`${API_URL}/capital/${query}`)
       .pipe(
         map((resp) => CountryMapper.mapCountryArrayToCountryArray(resp)),
-        delay(3000),
+        //delay(3000),
         catchError((err) => {
           console.error('Error fetching', err);
           return throwError(() => new Error(`No se puso encontrar países con la capital: ${query}`));
@@ -37,11 +37,26 @@ export class CountryService {
       .get<RESTCountry[]>(`${API_URL}/name/${query}`)
       .pipe(
         map((resp) => CountryMapper.mapCountryArrayToCountryArray(resp)),
+        delay(2000),
         catchError((err) => {
           console.error('Error fetching', err);
           return throwError(() => new Error(`No se puso encontrar países con el nombre: ${query}`));
         })
       );
-    }
+  }
+
+  searchByCountryByAlphaCode( code: string){
+
+    return this.http
+      .get<RESTCountry[]>(`${API_URL}/alpha/${code}`)
+      .pipe(
+        map((resp) => CountryMapper.mapCountryArrayToCountryArray(resp)),
+        map( countries => countries.at(0)),
+        catchError((err) => {
+          console.error('Error fetching', err);
+          return throwError(() => new Error(`No se puso encontrar países con el código: ${code}`));
+        })
+      );
+  }
 
 }

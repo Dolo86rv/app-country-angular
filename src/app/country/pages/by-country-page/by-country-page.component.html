@@ -3,7 +3,12 @@
   (value)="query.set($event)"
 />
 
-<country-list [countries]="countryResource.value() ?? []" />
+<country-list
+  [countries]="countryResource.value() ?? []"
+  [isLoading]="countryResource.isLoading()"
+  [errorMessage]="countryResource.error()"
+  [isEmpty]="countryResource.value()?.length === 0"
+/>
 <!--@if (countryResource.error()){
   <h3>{{ countryResource.error() }}</h3>
 }@if (countryResource.hasValue()){
