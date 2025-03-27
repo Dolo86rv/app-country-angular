@@ -5,6 +5,7 @@ import { CountryService } from '../../services/country.service';
 import { Country } from '../../interfaces/country.interfaces';
 import { firstValueFrom, of } from 'rxjs';
 import { rxResource } from '@angular/core/rxjs-interop';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-by-capital-page',
@@ -14,13 +15,24 @@ import { rxResource } from '@angular/core/rxjs-interop';
 export class ByCapitalPageComponent {
 
   countryService = inject(CountryService);
-  query = signal('');
+
+  //Injeccion de las rutas con todas sus propiedades
+  activatedRoute = inject(ActivatedRoute);
+  routter = inject(Router);
+  queryParam = this.activatedRoute.snapshot.queryParamMap.get('query') ?? '';
+
+  query = signal(this.queryParam);
 
   countryResource = rxResource ({
     request: () => ({ query: this.query() }),
     loader: ({request }) => {
       if (!request.query) return of([]);
 
+      this.routter.navigate(['/country/by-capital'], {
+        queryParams: {
+          query: request.query
+        }
+      })
       return this.countryService.searchByCapital(request.query);
     }
   });
